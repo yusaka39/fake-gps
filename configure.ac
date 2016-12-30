@@ -57,5 +57,6 @@ fi
 AC_CONFIG_FILES(
     [Makefile]
     [app/src/main/AndroidManifest.xml]
+    [app/src/main/kotlin/io/github/yusaka39/fakegps/ConfigureConfig.kt]
 )
 AC_OUTPUT

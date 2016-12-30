@@ -8,6 +8,7 @@
 /captures
 .externalNativeBuild
 /app/src/main/AndroidManifest.xml
+/app/src/main/kotlin/io/github/yusaka39/fakegps/ConfigureConfig.kt
 
 Makefile
 Makefile.in
