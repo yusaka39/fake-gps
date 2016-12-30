@@ -1,22 +1,31 @@
-package io.github.yusaka39.fakegps
+package io.github.yusaka39.fakegps.activity
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import io.github.yusaka39.fakegps.R
+import io.github.yusaka39.fakegps.service.LocationProviderService
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
     private lateinit var map: GoogleMap
-    private var marker: Marker? = null
+    private var marker: Marker? by Delegates.observable(null) { p, o: Marker?, n: Marker? ->
+        n?.position?.let {
+            this.updateAlarm(it)
+        }
+    }
 
     private var providers: List<String> = emptyList()
 
@@ -30,8 +39,6 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2357)
-        } else {
-            this.prepareTestProviders()
         }
     }
 
@@ -43,29 +50,9 @@ class MainActivity : AppCompatActivity() {
             this.finish()
             return
         }
-        this.prepareTestProviders()
     }
 
-    private fun prepareTestProviders() {
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        this.providers = lm.allProviders.filter {
-            listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER).contains(it)
-        }
-        this.providers.forEach {
-            val provider = lm.getProvider(it)
-            lm.addTestProvider(provider.name,
-                               provider.requiresNetwork(),
-                               provider.requiresSatellite(),
-                               provider.requiresCell(),
-                               provider.hasMonetaryCost(),
-                               provider.supportsAltitude(),
-                               provider.supportsSpeed(),
-                               provider.supportsBearing(),
-                               provider.powerRequirement,
-                               provider.accuracy)
-            lm.setTestProviderEnabled(it, true)
-        }
-    }
+
 
     private fun onInitializeMap(map: GoogleMap) {
         this.map = map
@@ -74,16 +61,12 @@ class MainActivity : AppCompatActivity() {
             val option = MarkerOptions()
             option.position(latLng)
             this.marker = map.addMarker(option)
-            this.providers.forEach {
-                val lm = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val location = Location(it)
-                location.latitude = latLng.latitude
-                location.longitude = latLng.longitude
-                location.accuracy = 0f
-                location.time = System.currentTimeMillis()
-                location.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
-                lm.setTestProviderLocation(it, location)
-            }
         }
+    }
+
+    fun updateAlarm(latLng : LatLng) {
+        val intent = Intent(this, LocationProviderService::class.java)
+        intent.putExtra(LocationProviderService.LAT_LNG_KEY, latLng)
+        this.startService(intent)
     }
 }
