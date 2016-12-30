@@ -7,3 +7,15 @@
 /build
 /captures
 .externalNativeBuild
+/app/src/main/AndroidManifest.xml
+
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+autoscan.log
+config.log
+config.status
+configure
+install-sh
+missing
