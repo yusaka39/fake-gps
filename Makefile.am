@@ -4,4 +4,4 @@ all:
 	$(SHELL) ./gradlew assembleDebug
 
 install: all
-	$(SHELL) $(ANDROID_HOME)/platform-tools/adb install -r $(APK_PATH)
+	$(ANDROID_HOME)/platform-tools/adb install -r $(APK_PATH)
