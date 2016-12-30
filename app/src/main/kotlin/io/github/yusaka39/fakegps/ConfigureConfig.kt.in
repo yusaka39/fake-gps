@@ -3,3 +3,5 @@ package io.github.yusaka39.fakegps
 /**
  * Created by yusaka on 12/30/16.
  */
+
+const val GEOCODING_API_KEY = "@GEOCODING_API_KEY@"
