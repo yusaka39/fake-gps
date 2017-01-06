@@ -22,17 +22,17 @@ private val MOCKING_TARGET = listOf(LocationManager.GPS_PROVIDER, LocationManage
 class LocationProviderService :
         Service() {
 
+    inner class LocationBinder : Binder() {
+        fun getServiceInstance() = this@LocationProviderService
+    }
+
     companion object {
         const val LAT_LNG_KEY = "latlng"
     }
 
     private var timer: Timer? = null
 
-    override fun onBind(intent: Intent?): IBinder = object : Binder() {
-        fun stopService() {
-            this@LocationProviderService.stopSelf()
-        }
-    }
+    override fun onBind(intent: Intent?): IBinder = LocationBinder()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val latlng = intent?.getParcelableExtra<LatLng>(LAT_LNG_KEY)
@@ -54,8 +54,8 @@ class LocationProviderService :
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         this.timer?.cancel()
+        super.onDestroy()
     }
 
     private fun prepareTestProviders(lm: LocationManager) {

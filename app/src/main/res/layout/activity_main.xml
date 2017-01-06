@@ -4,9 +4,16 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <Button android:id="@+id/stopButton"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:elevation="4dp"
+            android:text="stop service"/>
     <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@id/stopButton"
             android:id="@+id/mapFragment"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 </RelativeLayout>

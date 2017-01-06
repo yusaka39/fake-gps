@@ -1,7 +1,7 @@
 APK_PATH = app/build/outputs/apk/app-debug.apk
 
 all:
-	$(SHELL) ./gradlew assembleDebug
+	ANDROID_HOME=$(ANDROID_HOME) ./gradlew assembleDebug
 
 install: all
 	$(ANDROID_HOME)/platform-tools/adb install -r $(APK_PATH)
